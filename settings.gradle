@@ -1,2 +1,3 @@
 rootProject.name = 'selenium_first_project'
+include 'test'
 
