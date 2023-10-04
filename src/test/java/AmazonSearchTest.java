@@ -13,7 +13,7 @@ import java.time.Duration;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class GitHubSearchTest {
+public class AmazonSearchTest {
 
     private static WebDriver driver;
 
@@ -31,20 +31,23 @@ public class GitHubSearchTest {
     }
 
     @Test
-    public void checkGitHubSearch() {
-        driver.get("https://github.com/");
+    public void checkAmazonSearch() {
+        driver.get("https://www.amazon.in/");
 
-        WebElement searchInput = driver.findElement(By.cssSelector("body > div.logged-out.env-production.page-responsive.header-overlay.home-campaign > div.position-relative.js-header-wrapper > header > div > div.HeaderMenu--logged-out.p-responsive.height-fit.position-lg-relative.d-lg-flex.flex-column.flex-auto.pt-7.pb-4.top-0 > div > div > qbsearch-input > div.search-input-container.search-with-dialog.position-relative.d-flex.flex-row.flex-items-center.mr-4.rounded > button > span"));
+        WebElement searchInput = driver.findElement(By.cssSelector("#twotabsearchtextbox"));
 
-        String searchPhrase = "selenium";
-        searchInput.click();
-        WebElement searchInput1 = driver.findElement(By.cssSelector("#query-builder-test"));
-        searchInput1.sendKeys(searchPhrase);
-        searchInput1.sendKeys(Keys.ENTER);
+        String searchPhrase = "iphone";
 
-        List<String> actualItems = driver.findElements(By.cssSelector(".Box-sc-g0xbh4-0.bBwPjs.search-title")).stream().map(webElement -> webElement.getText().toLowerCase()).collect(Collectors.toList());
+        searchInput.sendKeys(searchPhrase);
+        searchInput.sendKeys(Keys.ENTER);
+
+        List<String> actualItems = driver.findElements(By.cssSelector(".a-link-normal.s-underline-text.s-underline-link-text.s-link-style.a-text-normal"))
+                .stream()
+                .map(element -> element.getText().toLowerCase() + element.getAttribute("href").toLowerCase())
+                .collect(Collectors.toList());
 
         List<String> expectedItems = actualItems.stream().filter(item -> item.contains(searchPhrase)).collect(Collectors.toList());
+
         Assertions.assertEquals(expectedItems, actualItems);
     }
 }
