@@ -8,21 +8,36 @@ import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 public class GitHubSearchTest {
 
     private static WebDriver driver;
 
+    private static WebDriverWait wait;
+
     @BeforeAll
     public static void setUpDriver() {
         WebDriverManager.chromedriver().setup();
         driver = new ChromeDriver();
         driver.manage().window().maximize();
-//        driver.manage().timeouts().implicitlyWait(10 , TimeUnit.SECONDS);
+        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+    }
+
+    @BeforeAll
+    public static void setUpWait() {
+        wait = new WebDriverWait(driver, Duration.ofSeconds(15));
+    }
+
+    private static void switchOffImplicitWait() {
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(0));
     }
 
     @AfterAll
@@ -48,7 +63,8 @@ public class GitHubSearchTest {
         List<String> expectedItems = actualItems.stream().filter(item -> item.contains(searchPhrase)).collect(Collectors.toList());
 
         System.out.println(LocalDateTime.now());
-        Assertions.assertTrue(driver.findElement(By.cssSelector("[title='invalid title']")).isDisplayed());
+        switchOffImplicitWait();
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(".repo-list-item")));
 
         Assertions.assertEquals(expectedItems, actualItems);
     }
