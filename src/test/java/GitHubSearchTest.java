@@ -9,7 +9,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 
-import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,11 +22,12 @@ public class GitHubSearchTest {
         WebDriverManager.chromedriver().setup();
         driver = new ChromeDriver();
         driver.manage().window().maximize();
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
+//        driver.manage().timeouts().implicitlyWait(10 , TimeUnit.SECONDS);
     }
 
     @AfterAll
     public static void tearDownDriver() {
+        System.out.println(LocalDateTime.now());
         driver.quit();
     }
 
@@ -45,6 +46,10 @@ public class GitHubSearchTest {
         List<String> actualItems = driver.findElements(By.cssSelector(".Box-sc-g0xbh4-0.bBwPjs.search-title")).stream().map(webElement -> webElement.getText().toLowerCase()).collect(Collectors.toList());
 
         List<String> expectedItems = actualItems.stream().filter(item -> item.contains(searchPhrase)).collect(Collectors.toList());
+
+        System.out.println(LocalDateTime.now());
+        Assertions.assertTrue(driver.findElement(By.cssSelector("[title='invalid title']")).isDisplayed());
+
         Assertions.assertEquals(expectedItems, actualItems);
     }
 }
