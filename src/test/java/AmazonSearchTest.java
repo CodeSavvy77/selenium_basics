@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 
 public class AmazonSearchTest {
 
+    private static final String SEARCH_PHRASE = "iphone";
     private static WebDriver driver;
 
     @BeforeAll
@@ -36,9 +37,7 @@ public class AmazonSearchTest {
 
         WebElement searchInput = driver.findElement(By.cssSelector("#twotabsearchtextbox"));
 
-        String searchPhrase = "iphone";
-
-        searchInput.sendKeys(searchPhrase);
+        searchInput.sendKeys(SEARCH_PHRASE);
         searchInput.sendKeys(Keys.ENTER);
 
         List<String> actualItems = driver.findElements(By.cssSelector(".a-link-normal.s-underline-text.s-underline-link-text.s-link-style.a-text-normal"))
@@ -46,7 +45,7 @@ public class AmazonSearchTest {
                 .map(element -> element.getText().toLowerCase() + element.getAttribute("href").toLowerCase())
                 .collect(Collectors.toList());
 
-        List<String> expectedItems = actualItems.stream().filter(item -> item.contains(searchPhrase)).collect(Collectors.toList());
+        List<String> expectedItems = actualItems.stream().filter(item -> item.contains(SEARCH_PHRASE)).collect(Collectors.toList());
 
         Assertions.assertEquals(expectedItems, actualItems);
     }

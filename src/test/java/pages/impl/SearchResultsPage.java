@@ -1,27 +1,31 @@
 package pages.impl;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
 import pages.WebPage;
+import pages.components.WebComponent;
+import pages.components.impl.SearchResultItemComponent;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class SearchResultsPage extends WebPage {
 
-    @FindBy(css = ".Box-sc-g0xbh4-0.bBwPjs.search-title")
-    private List<WebElement> searchResultsItems;
+    private static final By SEARCH_RESULT_ITEM_SELECTOR = By.cssSelector(".Box-sc-g0xbh4-0.bBwPjs.search-title");
 
     public SearchResultsPage(WebDriver driver) {
         super(driver);
     }
 
     public List<String> searchResultsItemsText() {
-        return searchResultsItems.stream().map(element -> element.getText().toLowerCase()).collect(Collectors.toList());
+        return searchResultItems().stream().map(WebComponent::getText).collect(Collectors.toList());
     }
 
-    public List<String> searchResultsItemsWithText(String searchText) {
-        return searchResultsItemsText().stream().filter(item -> item.contains(searchText)).collect(Collectors.toList());
+    public List<String> searchResultsItemsWithText(String searchPhrase) {
+        return searchResultItems().stream().filter(item -> item.containsSearchPhrase(searchPhrase)).map(WebComponent::getText).collect(Collectors.toList());
+    }
+
+    private List<SearchResultItemComponent> searchResultItems() {
+        return findElements(SEARCH_RESULT_ITEM_SELECTOR).stream().map(SearchResultItemComponent::new).collect(Collectors.toList());
     }
 }

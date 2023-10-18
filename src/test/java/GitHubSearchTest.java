@@ -50,7 +50,8 @@ public class GitHubSearchTest {
         HomePage homePage = new HomePage(driver);
         SearchResultsPage searchResultsPage = new SearchResultsPage(driver);
 
-        homePage.performSearch(SEARCH_PHRASE);
+        homePage.clickComponent().click();
+        homePage.searchComponent().performSearch(SEARCH_PHRASE);
 
         List<String> actualItems = searchResultsPage.searchResultsItemsText();
         List<String> expectedItems = searchResultsPage.searchResultsItemsWithText(SEARCH_PHRASE);
